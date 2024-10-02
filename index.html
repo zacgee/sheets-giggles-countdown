@@ -32,7 +32,7 @@
     }
 
     p {
-      font-size: 1.3rem;
+      font-size: 1.2rem;
     }
 
     .countdown {
@@ -41,15 +41,18 @@
       text-shadow: 2px 2px 5px #000000;
     }
   </style>
-</head>
-<script>
+  <script>
     const password = prompt("Enter the password to view this page:");
-  
-    if (password !== "RobertsSpooks") { 
+    
+    if (password !== "SpookyFun") { // Replace "SpookyFun" with your actual password
       document.body.innerHTML = "<h1>Access Denied</h1>";
+      // Optionally, you can add a redirect or a timeout here if you want to navigate away after denial.
+    } else {
+      document.body.style.display = "block";  // Display the body content only if the password is correct
     }
-</script>  
-<body>
+  </script>
+</head>
+<body style="display: none;"> <!-- Hides the body initially -->
   <h1>SHEETS & GIGGLES</h1>
   <h2>The spooky event begins in:</h2>
   <div class="countdown" id="countdown"></div>
@@ -57,7 +60,6 @@
   <p>🕒 Date & Time: Sunday October 6th 2024 from 8:00 PM - 10:00 PM</p>
   <p>📍 Location: Roberts Hall</p>
   <p>🎃 Activities: Pumpkin Painting, Trick or Treat House, Minefield, and Spooky Treats!</p>
-
 
   <script>
     const countdown = document.getElementById('countdown');
