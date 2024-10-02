@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Creepster&display=swap" rel="stylesheet">
+
+  <title>Sheets & Giggles Countdown</title>
+  <style>
+    body {
+      font-family: 'Creepster', sans-serif;
+      background: url('https://images.pexels.com/photos/619420/pexels-photo-619420.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2') no-repeat center center fixed;
+      background-size: cover;
+      color: #ffffff;
+      height: 100vh; /* Full viewport height */
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      flex-direction: column;
+    }
+
+    h1, h2, p {
+      text-shadow: 2px 2px 5px #000000;
+    }
+
+    h2, p {
+      font-family: 'Georgia', serif;
+    }
+
+    p {
+      font-size: 1.3rem;
+    }
+
+    .countdown {
+      font-size: 3rem;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 5px #000000;
+    }
+  </style>
+</head>
+<script>
+    const password = prompt("Enter the password to view this page:");
+  
+    if (password !== "RobertsSpooks") { 
+      document.body.innerHTML = "<h1>Access Denied</h1>";
+    }
+</script>  
+<body>
+  <h1>SHEETS & GIGGLES</h1>
+  <h2>The spooky event begins in:</h2>
+  <div class="countdown" id="countdown"></div>
+  <h2>Event Details</h2>
+  <p>🕒 Date & Time: Sunday October 6th 2024 from 8:00 PM - 10:00 PM</p>
+  <p>📍 Location: Roberts Hall</p>
+  <p>🎃 Activities: Pumpkin Painting, Trick or Treat House, Minefield, and Spooky Treats!</p>
+
+
+  <script>
+    const countdown = document.getElementById('countdown');
+    const eventDate = new Date('2024-10-06T08:00:00'); // Set your event date and time
+
+    function updateCountdown() {
+      const now = new Date().getTime();
+      const timeLeft = eventDate - now;
+
+      const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+      countdown.innerHTML = `${days} Days ${hours} Hrs ${minutes} Mins ${seconds} Secs`;
+
+      if (timeLeft < 0) {
+        clearInterval(timer);
+        countdown.innerHTML = "It's Showtime!";
+      }
+    }
+
+    const timer = setInterval(updateCountdown, 1000);
+  </script>
+</body>
+</html>
