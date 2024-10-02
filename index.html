@@ -45,7 +45,7 @@
     const password = prompt("Enter the password to view this page:");
     
     if (password !== "SpookyFun") { // Replace "SpookyFun" with your actual password
-      document.body.innerHTML = "<h1>Access Denied</h1>";
+      document.body.innerHTML = "<h1 style='color: black;'>Access Denied</h1>";
       // Optionally, you can add a redirect or a timeout here if you want to navigate away after denial.
     } else {
       document.body.style.display = "block";  // Display the body content only if the password is correct
