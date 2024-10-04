@@ -11,8 +11,7 @@
   <style>
     body {
       font-family: 'Creepster', sans-serif;
-      background: url('https://images.pexels.com/photos/619420/pexels-photo-619420.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2') no-repeat center center fixed;
-      background-size: cover;
+      background: #2E3944;
       color: #ffffff;
       height: 100vh; /* Full viewport height */
       margin: 0;
@@ -21,14 +20,13 @@
       align-items: center;
       text-align: center;
       flex-direction: column;
-    }
-
-    h1, h2, p {
-      text-shadow: 2px 2px 5px #000000;
+      padding: 10px;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
     }
 
     h2, p {
-      font-family: 'Georgia', serif;
+      font-family: 'Courier New', monospace;
     }
 
     p {
@@ -38,54 +36,165 @@
     .countdown {
       font-size: 3rem;
       margin-bottom: 20px;
-      text-shadow: 2px 2px 5px #000000;
     }
-  </style>
-  <script>
-    const password = prompt("Enter the password to view this page:");
 
-    if (password === "SpookyFun") {
-      document.body.style.display = "block";  // Show the body content if the password is correct
-    } else {
-      document.body.innerHTML = "<h1 style='color: black;'>Access Denied</h1>";  // Display Access Denied if incorrect password
-      document.body.style.display = "flex";  // Ensure that the 'Access Denied' message is displayed
-      document.body.style.justifyContent = "center";
-      document.body.style.alignItems = "center";
-      document.body.style.height = "100vh";
+    .ticket-text {
+      font-weight: bolder;
     }
-  </script>
+
+    .denied {
+      color: white;
+      font-family: 'Courier New', monospace;
+      text-align: center;
+    }
+
+    /* Hide the image initially */
+    .ticket-img {
+      display: none;
+      margin-top: 20px;
+      width: 300px;
+      border-radius: 10px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* Animation for each letter */
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .letter {
+      opacity: 0;
+      display: inline-block;
+      animation: fadeIn 0.5s forwards;
+      transform: translateY(20px);
+    }
+
+    .word {
+      display: inline-block;
+      white-space: nowrap; /* Prevent breaking within words */
+    }
+
+    .space {
+      display: inline-block;
+      width: 0.5rem; /* To account for spacing between words */
+    }
+
+  </style>
 </head>
-<body style="display: none;"> <!-- Hides the body initially -->
+<body id="content" style="display: none;"> <!-- Hides the body initially -->
   <h1>SHEETS & GIGGLES</h1>
   <h2>The spooky event begins in:</h2>
   <div class="countdown" id="countdown"></div>
   <h2>Event Details</h2>
-  <p>🕒 Date & Time: Sunday October 6th 2024 from 8:00 PM - 10:00 PM</p>
-  <p>📍 Location: Roberts Hall</p>
-  <p>🎃 Activities: Pumpkin Painting, Trick or Treat House, Minefield, and Spooky Treats!</p>
+  <p>Date & Time: Sunday October 6th 2024 from 8:00 PM - 10:00 PM</p>
+  <p>Location: Roberts Hall</p>
+  <p>Activities: Pumpkin Painting, Trick or Treat House, Minefield, and Spooky Treats!</p>
+
+  <p class="ticket-text">Show this ticket at check-in for an extra entry into our prize pool!</p>
+  <img class="ticket-img" id="ticket-img" src="image.png" alt="Event Ticket">
 
   <script>
-    const countdown = document.getElementById('countdown');
-    const eventDate = new Date('2024-10-06T08:00:00'); // Set your event date and time
+    window.onload = function() {
+      let globalIndex = 0; // Global index to animate from top to bottom
 
-    function updateCountdown() {
-      const now = new Date().getTime();
-      const timeLeft = eventDate - now;
+      // Function to wrap each word and space, then animate its letters
+      function wrapWordsAndLetters(node) {
+        const text = node.nodeValue;
+        const parent = node.parentNode;
+        const fragment = document.createDocumentFragment();
 
-      const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+        // Use a regex to split by both words and spaces
+        text.split(/(\s+)/).forEach((wordOrSpace) => {
+          if (wordOrSpace.trim().length > 0) {
+            const wordSpan = document.createElement('span');
+            wordSpan.classList.add('word'); // Wrap each word
 
-      countdown.innerHTML = `${days} Days ${hours} Hrs ${minutes} Mins ${seconds} Secs`;
+            // Now wrap each letter of the word
+            wordOrSpace.split('').forEach((char) => {
+              const letterSpan = document.createElement('span');
+              letterSpan.textContent = char;
+              letterSpan.classList.add('letter');
+              letterSpan.style.animationDelay = `${globalIndex * 0.05}s`; // Delay between each letter
+              globalIndex++; // Increment the global index for each letter
+              wordSpan.appendChild(letterSpan);
+            });
 
-      if (timeLeft < 0) {
-        clearInterval(timer);
-        countdown.innerHTML = "It's Showtime!";
+            fragment.appendChild(wordSpan); // Add the word to the fragment
+          } else {
+            // Handle spaces
+            const spaceSpan = document.createElement('span');
+            spaceSpan.classList.add('space'); // Add space class
+            fragment.appendChild(spaceSpan);
+            globalIndex++; // Increment the index for spaces too
+          }
+        });
+
+        parent.replaceChild(fragment, node);
       }
-    }
 
-    const timer = setInterval(updateCountdown, 1000);
+      // Function to recursively process text nodes in an element
+      function processTextNodes(element) {
+        element.childNodes.forEach(child => {
+          if (child.nodeType === 3 && child.nodeValue.trim().length > 0) { // Text node
+            wrapWordsAndLetters(child);
+          } else if (child.nodeType === 1) { // Element node
+            processTextNodes(child); // Recursively process child nodes
+          }
+        });
+      }
+
+      // Start by processing the body
+      processTextNodes(document.body);
+
+      // After all text animations, display the image
+      const totalAnimationDuration = 16000;
+      setTimeout(() => {
+        document.getElementById('ticket-img').style.display = 'block'; // Show the image
+      }, totalAnimationDuration); // Delay showing the image until text animation completes
+
+      // Prompt for the password
+      const password = prompt("Enter the password to view this page:");
+
+      // Check the password
+      if (password === "SpookyFun") {
+        // If the password is correct, show the content
+        document.getElementById('content').style.display = "block";
+      } else {
+        // If the password is incorrect, show the "Access Denied" message
+        document.body.innerHTML = "<h1 class='denied'>Access Denied</h1>";
+        document.body.style.display = "flex";
+        document.body.style.justifyContent = "center";
+        document.body.style.alignItems = "center";
+        document.body.style.height = "100vh";
+      }
+
+      // Countdown functionality
+      const countdown = document.getElementById('countdown');
+      const eventDate = new Date('2024-10-06T08:00:00'); // Set your event date and time
+
+      function updateCountdown() {
+        const now = new Date().getTime();
+        const timeLeft = eventDate - now;
+
+        const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+        countdown.innerHTML = `${days} Days ${hours} Hrs ${minutes} Mins ${seconds} Secs`;
+
+        if (timeLeft < 0) {
+          clearInterval(timer);
+          countdown.innerHTML = "It's Showtime!";
+        }
+      }
+
+      const timer = setInterval(updateCountdown, 1000);
+    }
   </script>
 </body>
 </html>
